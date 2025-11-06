@@ -1,0 +1,58 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Eliminar Usuario - {{ user_obj.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Eliminar Usuario</h1>
+        
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="mb-6 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                <i class="fas fa-info-circle mr-2"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-8">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-yellow-700">
+                        ¿Está seguro de que desea eliminar al usuario <strong>{{ user_obj.username }}</strong>? 
+                        Esta acción no se puede deshacer y se eliminarán todos los datos asociados a este usuario.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <span class="text-red-600 text-2xl font-bold">{{ user_obj.username.0|upper }}</span>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">{{ user_obj.username }}</h2>
+                <p class="text-gray-600">{{ user_obj.get_full_name }}</p>
+                <p class="text-sm text-gray-500">{{ user_obj.email }}</p>
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-4 pt-8">
+            <a href="{% url 'users:detail' user_obj.pk %}" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold">
+                <i class="fas fa-times mr-2"></i>Cancelar
+            </a>
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold">
+                    <i class="fas fa-trash mr-2"></i>Eliminar Permanentemente
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

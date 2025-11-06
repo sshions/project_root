@@ -1,0 +1,81 @@
+<aside 
+    x-show="sidebarOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    class="fixed left-0 top-16 h-full w-64 bg-white shadow-xl overflow-y-auto z-40"
+>
+    <nav class="p-4">
+        
+        <!-- Dashboard -->
+        <a href="{% url 'dashboard' %}" 
+           class="flex items-center px-4 py-3 mb-2 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-blue-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition">
+            <i class="fas fa-home mr-3 text-lg"></i>
+            <span class="font-semibold">Dashboard</span>
+        </a>
+        
+        <!-- Users Module -->
+        {% if request.user.is_superuser %}
+        <div x-data="{ open: {{ 'true' if 'users' in request.path else 'false' }} }" class="mb-2">
+            <button 
+                @click="open = !open"
+                class="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+            >
+                <div class="flex items-center">
+                    <i class="fas fa-users mr-3 text-lg"></i>
+                    <span class="font-semibold">Gestión de Usuarios</span>
+                </div>
+                <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas text-sm"></i>
+            </button>
+            
+            <div x-show="open" x-transition class="ml-4 mt-2 space-y-1">
+                <a href="{% url 'users:list' %}" 
+                   class="flex items-center px-4 py-2 rounded-lg {% if request.resolver_match.url_name == 'list' %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:bg-gray-50{% endif %} transition">
+                    <i class="fas fa-list mr-3"></i>
+                    <span>Lista de Usuarios</span>
+                </a>
+                <a href="{% url 'users:create' %}" 
+                   class="flex items-center px-4 py-2 rounded-lg {% if request.resolver_match.url_name == 'create' %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:bg-gray-50{% endif %} transition">
+                    <i class="fas fa-user-plus mr-3"></i>
+                    <span>Nuevo Usuario</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Divider -->
+        <hr class="my-4 border-gray-200">
+        
+        <!-- Future Modules Placeholder -->
+        <div class="px-4 py-3 text-gray-400 text-sm font-semibold uppercase">
+            Módulos Futuros
+        </div>
+        
+        <div class="space-y-2 opacity-50">
+            <div class="flex items-center px-4 py-3 text-gray-400">
+                <i class="fas fa-box mr-3 text-lg"></i>
+                <span>Inventario</span>
+            </div>
+            <div class="flex items-center px-4 py-3 text-gray-400">
+                <i class="fas fa-chart-bar mr-3 text-lg"></i>
+                <span>Reportes</span>
+            </div>
+            <div class="flex items-center px-4 py-3 text-gray-400">
+                <i class="fas fa-cog mr-3 text-lg"></i>
+                <span>Configuración</span>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-50">
+            <div class="text-center text-xs text-gray-500">
+                <p>v1.0.0</p>
+                <p class="mt-1">&copy; 2024 Tu Empresa</p>
+            </div>
+        </div>
+        
+    </nav>
+</aside>

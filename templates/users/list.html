@@ -1,0 +1,144 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
+            <p class="text-gray-600 mt-1">Administra todos los usuarios del sistema</p>
+        </div>
+        <a href="{% url 'users:create' %}" 
+           class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg">
+            <i class="fas fa-user-plus mr-2"></i>Nuevo Usuario
+        </a>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <form method="get" class="flex gap-4">
+            <div class="flex-1">
+                <input 
+                    type="text" 
+                    name="q" 
+                    value="{{ query }}"
+                    placeholder="Buscar por usuario, email o nombre..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+            </div>
+            <button 
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-lg transition"
+            >
+                <i class="fas fa-search mr-2"></i>Buscar
+            </button>
+        </form>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Usuario
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Fecha Registro
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Estado
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Rol
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for user in users %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-semibold">{{ user.username.0|upper }}</span>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">{{ user.username }}</div>
+                                    <div class="text-sm text-gray-600">{{ user.get_full_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                            {{ user.email }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                            {{ user.date_joined|date:"d/m/Y" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user.is_active %}
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                <i class="fas fa-check-circle mr-1"></i>Activo
+                            </span>
+                            {% else %}
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                                <i class="fas fa-times-circle mr-1"></i>Inactivo
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user.is_superuser %}
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">
+                                <i class="fas fa-crown mr-1"></i>Admin
+                            </span>
+                            {% elif user.is_staff %}
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                                <i class="fas fa-user-tie mr-1"></i>Staff
+                            </span>
+                            {% else %}
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">
+                                <i class="fas fa-user mr-1"></i>Usuario
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex space-x-2">
+                                <a href="{% url 'users:detail' user.pk %}" 
+                                   class="text-blue-600 hover:text-blue-800" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'users:edit' user.pk %}" 
+                                   class="text-green-600 hover:text-green-800" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'users:delete' user.pk %}" 
+                                   class="text-red-600 hover:text-red-800" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <i class="fas fa-users text-4xl mb-4"></i>
+                            <p>No se encontraron usuarios</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
